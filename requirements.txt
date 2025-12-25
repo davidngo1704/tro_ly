@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-dotenv
+alembic
+huggingface_hub
+llama-cpp-python
+chromadb
+sentence-transformers
+sentencepiece
+transformers
+sacremoses
+googletrans==4.0.0-rc1
+sentence_transformers
+requests
