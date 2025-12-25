@@ -1,12 +1,17 @@
 import os
+
 import asyncio
+
 import edge_tts
+
 import sounddevice as sd
+
 import soundfile as sf
 
 import numpy as np
 
 import librosa
+
 import torch
 
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
@@ -24,6 +29,7 @@ async def speak_to_wav(text: str, output_path: str):
         text=text,
         voice="vi-VN-HoaiMyNeural"
     )
+
     await communicate.save(output_path)
 
     data, samplerate = sf.read(output_path, dtype="float32")
@@ -89,25 +95,7 @@ def speech_to_text(wav_path: str) -> str:
 
 
 async def main():
-    prompt = "anh rất yêu em"
-
-    print("▶ TTS prompt:", prompt)
-
-    await speak_to_wav(prompt, WAV_FILE)
-
-    print("▶ STT processing...")
-
-    result = speech_to_text(WAV_FILE)
-
-    print("▶ STT result: ")
-
-    print(result)
-
-    if os.path.exists(WAV_FILE):
-
-        os.remove(WAV_FILE)
-
-
+-
 if __name__ == "__main__":
 
     asyncio.run(main())
