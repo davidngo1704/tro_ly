@@ -22,6 +22,22 @@ MODEL_DIR = r"D:\SourceCode\agents\tro_ly\database\models"
 
 WAV_FILE = "test_prompt.wav"
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+processor = WhisperProcessor.from_pretrained(
+    MODEL_NAME,
+    cache_dir=MODEL_DIR
+)
+
+model = WhisperForConditionalGeneration.from_pretrained(
+    MODEL_NAME,
+    cache_dir=MODEL_DIR,
+    torch_dtype=torch.float16 if device == "cuda" else torch.float32
+).to(device)
+
+model.eval()
+
+
 
 async def speak_to_wav(text: str, output_path: str):
 
@@ -94,3 +110,53 @@ def speech_to_text(wav_path: str) -> str:
 
     return text.strip()
 
+def record_audio(seconds=5, sr=16000):
+    audio = sd.rec(
+        int(seconds * sr),
+        samplerate=sr,
+        channels=1,
+        dtype="float32"
+    )
+    sd.wait()
+    return audio.squeeze()
+
+def speech_to_text_from_buffer(audio_16k: np.ndarray) -> str:
+    input_features = processor(
+        audio_16k,
+        sampling_rate=16000,
+        return_tensors="pt"
+    ).input_features.to(device)
+
+    with torch.no_grad():
+        ids = model.generate(
+            input_features,
+            language="vi",
+            task="transcribe"
+        )
+
+    return processor.batch_decode(ids, skip_special_tokens=True)[0].strip()
+
+
+async def main():
+    prompt = "anh rất yêu em"
+
+    print("▶ TTS prompt:", prompt)
+
+    await speak_to_wav(prompt, WAV_FILE)
+
+    print("▶ STT processing...")
+
+    result = speech_to_text(WAV_FILE)
+
+    print("▶ STT result: ")
+
+    print(result)
+
+    if os.path.exists(WAV_FILE):
+
+        os.remove(WAV_FILE)
+
+
+if __name__ == "__main__":
+
+    asyncio.run(main())

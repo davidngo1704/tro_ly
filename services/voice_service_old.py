@@ -94,3 +94,26 @@ def speech_to_text(wav_path: str) -> str:
 
     return text.strip()
 
+async def main():
+    prompt = "anh rất yêu em"
+
+    print("▶ TTS prompt:", prompt)
+
+    await speak_to_wav(prompt, WAV_FILE)
+
+    print("▶ STT processing...")
+
+    result = speech_to_text(WAV_FILE)
+
+    print("▶ STT result: ")
+
+    print(result)
+
+    if os.path.exists(WAV_FILE):
+
+        os.remove(WAV_FILE)
+
+
+if __name__ == "__main__":
+
+    asyncio.run(main())
