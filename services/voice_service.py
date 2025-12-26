@@ -156,7 +156,12 @@ async def main():
 
         os.remove(WAV_FILE)
 
+async def speak(text: str):
+    tmp = "_tts_tmp.wav"
+    await speak_to_wav(text, tmp)
+    if os.path.exists(tmp):
+        os.remove(tmp)
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    asyncio.run(main())
+#     asyncio.run(main())

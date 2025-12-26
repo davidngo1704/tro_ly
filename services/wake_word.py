@@ -3,7 +3,7 @@ import pyaudio
 import struct
 import json
 from vosk import Model, KaldiRecognizer
-from services.my_speak import speak
+from services.my_speak_old import speak
 import asyncio
 
 
