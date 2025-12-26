@@ -25,6 +25,10 @@ MAX_SILENCE_TIME = 1.2
 
 audio_queue = queue.Queue()
 
+def clear_audio_queue():
+    while not audio_queue.empty():
+        audio_queue.get()
+
 
 def audio_callback(indata, frames, time_info, status):
     if status:
@@ -66,12 +70,17 @@ def record_until_silence() -> np.ndarray:
 
 
 def listen_and_transcribe():
+
     audio = record_until_silence()
+
     if audio.size < SAMPLE_RATE * 0.3:
+
         print("⚠️ Âm quá ngắn, bỏ qua")
+
         return
 
     text = speech_to_text_from_buffer(audio)
+    
     print("📄 Bạn nói:", text)
 
 
