@@ -70,6 +70,7 @@ def record_until_silence() -> np.ndarray:
 
 
 def listen_and_transcribe():
+    clear_audio_queue()
 
     audio = record_until_silence()
 
@@ -119,7 +120,10 @@ def main():
 
             if porcupine.process(pcm) >= 0:
                 asyncio.run(speak("Tôi xin lắng nghe"))
+                
                 listen_and_transcribe()
+
+                print("\n🤖 Jarvis đang chờ wake word...\n")
 
     except KeyboardInterrupt:
         print("🛑 Stopping...")
